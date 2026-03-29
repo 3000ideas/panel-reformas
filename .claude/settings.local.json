@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"Set-Location ''C:\\\\Users\\\\angel\\\\Proyectos Claude Code\\\\Panel de inicio reformas''; git status\")",
+      "Bash(echo \"exit: $?\")"
+    ]
+  }
+}

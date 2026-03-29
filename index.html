@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel · REFORMAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="header">
+    <span class="header-title">Panel de inicio</span>
+    <span class="header-date" id="header-date"></span>
+  </header>
+
+  <main class="dashboard">
+
+    <!-- ── TAREAS ──────────────────────────────────────── -->
+    <div class="tasks-grid">
+      <div class="panel" data-col="todas">
+        <div class="col-header">
+          <h2>Todas</h2>
+          <button class="btn-add" data-scope="all" title="Añadir tarea">+</button>
+        </div>
+        <ul class="task-list" id="list-all"></ul>
+      </div>
+
+      <div class="panel" data-col="semana">
+        <div class="col-header">
+          <h2>Esta semana</h2>
+          <button class="btn-add" data-scope="week" title="Añadir tarea">+</button>
+        </div>
+        <ul class="task-list" id="list-week"></ul>
+      </div>
+
+      <div class="panel" data-col="hoy">
+        <div class="col-header">
+          <h2>Hoy</h2>
+          <button class="btn-add" data-scope="today" title="Añadir tarea">+</button>
+        </div>
+        <ul class="task-list" id="list-today"></ul>
+      </div>
+
+      <div class="panel" data-col="micro">
+        <div class="col-header">
+          <h2>Microtareas</h2>
+          <button class="btn-add" data-scope="micro" title="Añadir microtarea">+</button>
+        </div>
+        <ul class="task-list" id="list-micro"></ul>
+      </div>
+    </div>
+
+    <!-- ── PROYECTOS ─────────────────────────────────────── -->
+    <div class="panel projects-panel">
+      <div class="panel-header">
+        <h2>Proyectos</h2>
+        <button class="btn-add" id="btn-add-project" title="Añadir proyecto">+</button>
+      </div>
+      <div class="projects-list" id="projects-list"></div>
+      <div id="projects-more"></div>
+    </div>
+
+    <!-- ── CALENDARIO ──────────────────────────────────── -->
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Calendario</h2>
+        <button class="btn-add" id="btn-add-event" title="Añadir evento">+</button>
+      </div>
+      <div class="cal-nav-wrapper">
+        <button class="cal-nav-btn" onclick="calPrev()" title="Mes anterior">&#8249;</button>
+        <div class="cal-grid" id="cal-grid"></div>
+        <button class="cal-nav-btn" onclick="calNext()" title="Mes siguiente">&#8250;</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ── MODAL ───────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-title"></span>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/tasks.js"></script>
+  <script src="js/projects.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(powershell -Command \"Set-Location ''C:\\\\Users\\\\angel\\\\Proyectos Claude Code\\\\Panel de inicio reformas''; git status\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(cmd /c \"cd /d \"\"C:\\\\Users\\\\angel\\\\Proyectos Claude Code\\\\Panel de inicio reformas\"\" && git init && git remote add origin https://github.com/3000ideas/panel-reformas.git && git add . && git commit -m \"\"Panel Reformas - inicial\"\" && git branch -M main && git push -u origin main\")"
     ]
   }
 }

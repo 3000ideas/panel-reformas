@@ -6,9 +6,21 @@ let dragProjectId = null
 let showAllProjects = false
 const PROJECTS_LIMIT = 10
 
-const STATUS_CYCLE  = ['activo', 'pausa', 'descartado', 'completado']
-const STATUS_LABEL  = { activo: 'Activo', pausa: 'En espera', descartado: 'Descartado', completado: 'Completado' }
-const STATUS_CLASS  = { activo: 'proj-status-activo', pausa: 'proj-status-pausa', descartado: 'proj-status-descartado', completado: 'proj-status-completado' }
+const STATUS_CYCLE  = ['activo', 'urgente', 'pausa', 'descartado', 'completado']
+const STATUS_LABEL  = { activo: 'Activo', urgente: 'Urgente', pausa: 'En espera', descartado: 'Descartado', completado: 'Completado' }
+const STATUS_CLASS  = { activo: 'proj-status-activo', urgente: 'proj-status-urgente', pausa: 'proj-status-pausa', descartado: 'proj-status-descartado', completado: 'proj-status-completado' }
+
+let projectFilter  = 'todos'
+let projectCompact = false
+
+const FILTER_DEFS = [
+  { key: 'urgentes',    label: 'Urgentes',    match: p => p.status === 'urgente' },
+  { key: 'activos',     label: 'Activos',     match: p => !p.status || p.status === 'activo' },
+  { key: 'espera',      label: 'En Espera',   match: p => p.status === 'pausa' },
+  { key: 'completados', label: 'Completados', match: p => p.status === 'completado' },
+  { key: 'descartados', label: 'Descartados', match: p => p.status === 'descartado' },
+  { key: 'todos',       label: 'Todos',       match: () => true },
+]
 
 // ── LOAD ──────────────────────────────────────────────────
 
@@ -39,23 +51,76 @@ function renderProjects() {
       projectTasks[t.project_id].push(t)
     }
   })
-  const list = document.getElementById('projects-list')
+
+  // ── Filtros con contadores ──
+  const filtersEl = document.getElementById('proj-filters')
+  if (filtersEl) {
+    filtersEl.innerHTML = FILTER_DEFS.map(f => {
+      const count = allProjects.filter(f.match).length
+      return `<button class="proj-filter-badge ${projectFilter === f.key ? 'active' : ''}"
+        onclick="setProjectFilter('${f.key}')">
+        ${f.label}<span class="proj-filter-count">${count}</span>
+      </button>`
+    }).join('')
+  }
+
+  // ── Botón compacto ──
+  const btnCompact = document.getElementById('btn-compact-projects')
+  if (btnCompact) btnCompact.classList.toggle('active', projectCompact)
+
+  // ── Lista filtrada ──
+  const filtered = allProjects.filter(FILTER_DEFS.find(f => f.key === projectFilter).match)
+  const hasMore  = filtered.length > PROJECTS_LIMIT
+  const visible  = (hasMore && !showAllProjects) ? filtered.slice(0, PROJECTS_LIMIT) : filtered
+
+  const list   = document.getElementById('projects-list')
   const moreEl = document.getElementById('projects-more')
   if (!list) return
 
-  const hasMore = allProjects.length > PROJECTS_LIMIT
-  const visible = (hasMore && !showAllProjects) ? allProjects.slice(0, PROJECTS_LIMIT) : allProjects
-  list.innerHTML = visible.map(p => projectCardHTML(p)).join('')
+  list.innerHTML = visible.map(p => projectCompact ? projectCompactHTML(p) : projectCardHTML(p)).join('')
 
   if (moreEl) {
-    if (hasMore) {
-      moreEl.innerHTML = `<button class="btn-projects-more" onclick="toggleShowAllProjects()">
-        ${showAllProjects ? 'Ver menos ▲' : `Ver más · ${allProjects.length - PROJECTS_LIMIT} proyectos más ▼`}
-      </button>`
-    } else {
-      moreEl.innerHTML = ''
-    }
+    moreEl.innerHTML = hasMore
+      ? `<button class="btn-projects-more" onclick="toggleShowAllProjects()">
+           ${showAllProjects ? 'Ver menos ▲' : `Ver más · ${filtered.length - PROJECTS_LIMIT} más ▼`}
+         </button>`
+      : ''
   }
+}
+
+function setProjectFilter(key) {
+  projectFilter = key
+  showAllProjects = false
+  renderProjects()
+}
+
+function toggleProjectCompact() {
+  projectCompact = !projectCompact
+  renderProjects()
+}
+
+function projectCompactHTML(p) {
+  const status = p.status || 'activo'
+  return `
+    <div class="project-row-compact" data-id="${p.id}"
+      draggable="true"
+      ondragstart="onProjectDragStart(event,'${p.id}')"
+      ondragend="onProjectDragEnd(event)"
+      ondragover="onProjectDragOver(event,'${p.id}')"
+      ondragleave="onProjectDragLeave(event)"
+      ondrop="onProjectDrop(event,'${p.id}')">
+      <span class="project-name">${escHtml(p.name)}</span>
+      ${p.subtitle ? `<span class="proj-compact-sub">${escHtml(p.subtitle)}</span>` : ''}
+      ${p.client   ? `<span class="proj-compact-client">${escHtml(p.client)}</span>` : ''}
+      <span class="proj-status ${STATUS_CLASS[status]}"
+        ondblclick="cycleProjectStatus('${p.id}')"
+        title="Doble clic para cambiar estado">${STATUS_LABEL[status]}</span>
+      <span class="proj-compact-date">${formatDate(p.entry_date)}</span>
+      <span class="project-card-btns">
+        <button class="btn-icon btn-edit" onclick="openEditProject('${p.id}')" title="Editar">✎</button>
+        <button class="btn-icon" onclick="confirmDeleteProject('${p.id}')" title="Borrar">✕</button>
+      </span>
+    </div>`
 }
 
 function toggleShowAllProjects() {
@@ -388,14 +453,14 @@ function onProjectDragStart(e, id) {
   dragProjectId = id
   e.dataTransfer.effectAllowed = 'move'
   requestAnimationFrame(() => {
-    const el = e.target.closest('.project-card')
+    const el = e.target.closest('[data-id]')
     if (el) el.classList.add('dragging')
   })
 }
 
 function onProjectDragEnd(e) {
-  document.querySelectorAll('.project-card.dragging').forEach(el => el.classList.remove('dragging'))
-  document.querySelectorAll('.project-card.drop-above, .project-card.drop-below').forEach(el => {
+  document.querySelectorAll('[data-id].dragging').forEach(el => el.classList.remove('dragging'))
+  document.querySelectorAll('[data-id].drop-above, [data-id].drop-below').forEach(el => {
     el.classList.remove('drop-above', 'drop-below')
   })
   dragProjectId = null

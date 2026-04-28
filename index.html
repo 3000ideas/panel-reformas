@@ -57,8 +57,12 @@
     <div class="panel projects-panel">
       <div class="panel-header">
         <h2>Proyectos</h2>
-        <button class="btn-add" id="btn-add-project" title="Añadir proyecto">+</button>
+        <div class="proj-header-actions">
+          <button class="btn-compact-toggle" id="btn-compact-projects" onclick="toggleProjectCompact()" title="Vista compacta">&#9776;</button>
+          <button class="btn-add" id="btn-add-project" title="Añadir proyecto">+</button>
+        </div>
       </div>
+      <div class="proj-filters" id="proj-filters"></div>
       <div class="projects-list" id="projects-list"></div>
       <div id="projects-more"></div>
     </div>

@@ -628,6 +628,119 @@ body {
 }
 .day-more-btn:hover { color: var(--accent); background: var(--accent-light); }
 
+/* ── PROJECTS HEADER ─────────────────────────────────────── */
+.proj-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-compact-toggle {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  line-height: 1;
+}
+.btn-compact-toggle:hover,
+.btn-compact-toggle.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── FILTER BADGES ───────────────────────────────────────── */
+.proj-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.proj-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.proj-filter-badge:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.proj-filter-badge.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+.proj-filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 3px;
+  border-radius: 20px;
+  background: rgba(0,0,0,0.1);
+  font-size: 10px;
+  font-weight: 700;
+}
+.proj-filter-badge.active .proj-filter-count {
+  background: rgba(255,255,255,0.25);
+}
+
+/* ── COMPACT ROW ─────────────────────────────────────────── */
+.project-row-compact {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: grab;
+}
+.project-row-compact:hover { border-color: var(--accent); }
+.project-row-compact .project-name { font-size: 13px; font-weight: 600; }
+.proj-compact-sub    { font-size: 12px; color: var(--text-secondary); font-style: italic; }
+.proj-compact-client { font-size: 12px; color: var(--text-primary); }
+.proj-compact-date   { font-size: 11px; color: var(--text-secondary); margin-left: auto; white-space: nowrap; }
+.project-row-compact .project-card-btns {
+  opacity: 0;
+  margin-top: 0;
+  margin-left: 6px;
+}
+.project-row-compact:hover .project-card-btns { opacity: 1; }
+.project-row-compact.dragging { opacity: 0.35; }
+.project-row-compact.drop-above::before,
+.project-row-compact.drop-below::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  pointer-events: none;
+}
+.project-row-compact.drop-above::before { top:    -4px; }
+.project-row-compact.drop-below::after  { bottom: -4px; }
+
 /* ── PROJECTS ────────────────────────────────────────────── */
 .projects-list {
   display: flex;
@@ -711,6 +824,7 @@ body {
   white-space: nowrap;
 }
 .proj-status-activo     { background: #d1fae5; color: #065f46; }
+.proj-status-urgente    { background: #ffedd5; color: #9a3412; }
 .proj-status-pausa      { background: #fef3c7; color: #92400e; }
 .proj-status-descartado { background: #fee2e2; color: #991b1b; }
 .proj-status-completado { background: #dbeafe; color: #1e40af; }
